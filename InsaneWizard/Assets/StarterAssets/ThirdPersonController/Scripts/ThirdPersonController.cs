@@ -14,6 +14,11 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+
+        private bool hasDoubleJumped = false;
+        public float doubleJumpBoost = 4f;
+        private Animator animator;
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
@@ -139,10 +144,11 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
+            animator = GetComponent<Animator>();
+#if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
             AssignAnimationIDs();
@@ -283,6 +289,7 @@ namespace StarterAssets
         {
             if (Grounded)
             {
+                hasDoubleJumped = false;
                 // reset the fall timeout timer
                 _fallTimeoutDelta = FallTimeout;
 
@@ -337,6 +344,17 @@ namespace StarterAssets
                     }
                 }
 
+
+                if (!hasDoubleJumped && _input.jump)
+                        {
+                            hasDoubleJumped = true;
+
+                            // Trigger flip animation
+                            _animator.SetTrigger("DoFrontFlip");
+
+                            // Apply vertical boost
+                            _verticalVelocity = doubleJumpBoost;
+                        }
                 // if we are not grounded, do not jump
                 _input.jump = false;
             }
