@@ -21,11 +21,11 @@ public class HealthMaskController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.H))
         {
-            TakeDamage(10f);
+            TakeDamage(5f);
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
-            Heal(10f);
+            Heal(100f);
         }
     }
 
